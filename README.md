@@ -42,6 +42,8 @@ The browser runs these checks before `fetch`. The server runs them again on `POS
 - Responses send a Content-Security-Policy that allows scripts only from this host.
 - Login and registration attempts are limited per client address.
 
+
+
 ## Tests
 
 ```bash
@@ -52,17 +54,16 @@ The tests cover empty input, the length and `@` rules, a SQL-shaped email, a SQL
 
 ## Project layout
 
-| Path | Role |
-| --- | --- |
-| `public/index.html` | Login page |
-| `public/register.html` | Registration page |
-| `public/app.js` | Login behavior |
-| `public/register.js` | Registration behavior |
-| `public/validate.js` | Shared validation |
-| `server.js` | API, bcrypt, SQLite, session cookie |
-| `test/login.test.js` | API tests |
-| `submission/HW2B-Juice-Shop.pdf` | Course write-up |
 
-## Publish
+| Path                             | Role                                |
+| -------------------------------- | ----------------------------------- |
+| `public/index.html`              | Login page                          |
+| `public/register.html`           | Registration page                   |
+| `public/app.js`                  | Login behavior                      |
+| `public/register.js`             | Registration behavior               |
+| `public/validate.js`             | Shared validation                   |
+| `server.js`                      | API, bcrypt, SQLite, session cookie |
+| `test/login.test.js`             | API tests                           |
+| `submission/HW2B-Juice-Shop.pdf` | Course write-up                     |
 
-This lab is meant to be published as a public Git repository. Keep this README with the code so someone else can install dependencies and start the server without extra steps.
+
