@@ -119,18 +119,8 @@ def main():
     pdf.add_page()
 
     pdf.set_text_color(36, 54, 44)
-    pdf.set_font("Times", "B", 12)
-    pdf.cell(0, 6, "HW 2B", new_x="LMARGIN", new_y="NEXT")
     pdf.set_font("Times", "B", 20)
-    pdf.multi_cell(pdf.epw, 9, "A secure login for a Juice Shop-style shop")
-    pdf.ln(1)
-    pdf.set_font("Times", size=11)
-    pdf.set_text_color(87, 83, 78)
-    pdf.multi_cell(
-        pdf.epw,
-        5.4,
-        "Secure feature design, a login form with checks on both sides, and an attempt to break that form.",
-    )
+    pdf.multi_cell(pdf.epw, 9, "OWASP Juice Shop")
     pdf.ln(2)
 
     heading(pdf, "Part 1. Secure feature design")
