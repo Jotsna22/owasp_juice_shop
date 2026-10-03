@@ -28,8 +28,9 @@ PART_1 = [
     ),
 ]
 
-PART_2 = """\
-This is an HTML, CSS, and JavaScript login, plus account creation. validateLogin blocks an empty submit, requires @ in the email, and requires a password of at least 8 characters. The browser runs that check, and the server runs it again. Passwords are stored with bcrypt at cost 10. After sign-in, the customer can order drinks. Run npm install, then npm start, and open http://127.0.0.1:47291. The sample account is demo@juice.lab / Lemonade1. README.md has the same steps. Publish this folder on GitHub and paste that public URL here. This copy has no public link yet."""
+REPO_URL = "https://github.com/Jotsna22/owasp_juice_shop"
+PART_2 = f"""\
+This is an HTML, CSS, and JavaScript login, plus account creation. validateLogin blocks an empty submit, requires @ in the email, and requires a password of at least 8 characters. The browser runs that check, and the server runs it again. Passwords are stored with bcrypt at cost 10. After sign-in, the customer can order drinks. Run npm install, then npm start, and open http://127.0.0.1:47291. The sample account is demo@juice.lab / Lemonade1. README.md has the same steps. Clone the repository, then use those same commands. The repository is {REPO_URL}."""
 
 PART_3 = """\
 I tried to break this login at http://127.0.0.1:47291. An empty submit said the email and password are required. A short password was rejected for length. An email shaped like a database command was rejected with "That email or password doesn't match our records." The sample account stayed locked because the email is bound to ?. An email containing markup did not run a script. Those characters stayed in the box as text. The attack failed. The fix is the bound query and treating input as text. If that input were inserted as HTML, the browser could run it."""
@@ -64,8 +65,16 @@ def heading(pdf: Submission, text: str):
 def body(pdf: Submission, text: str):
     pdf.set_font("Times", size=11.5)
     pdf.set_text_color(28, 25, 23)
-    pdf.multi_cell(pdf.epw, 5.6, text)
+    pdf.multi_cell(pdf.epw, 5.6, text, align="L")
     pdf.ln(2)
+
+
+def repository_link(pdf: Submission, url: str):
+    pdf.set_font("Times", size=11.5)
+    pdf.set_text_color(20, 78, 140)
+    pdf.cell(pdf.epw, 6, url, link=url, new_x="LMARGIN", new_y="NEXT")
+    pdf.ln(2)
+    pdf.set_text_color(28, 25, 23)
 
 
 def vulnerability(pdf: Submission, title: str, problem: str, fix: str):
@@ -128,7 +137,9 @@ def main():
         vulnerability(pdf, title, problem, fix)
 
     heading(pdf, "Part 2. Login form")
-    body(pdf, PART_2)
+    prose, _, _url = PART_2.rpartition(REPO_URL)
+    body(pdf, prose.rstrip())
+    repository_link(pdf, REPO_URL)
     figure(
         pdf,
         "login_desktop.png",
