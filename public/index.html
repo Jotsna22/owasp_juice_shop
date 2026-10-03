@@ -74,15 +74,27 @@
         </aside>
       </section>
 
-      <section id="account" class="card" hidden>
-        <p class="eyebrow">Signed in</p>
-        <h2>Welcome back</h2>
-        <p>You're signed in as</p>
-        <p id="account-email" class="account-email"></p>
-        <p class="fine">
-          You're all set. Log out when you're done ordering.
-        </p>
-        <button id="logout" class="primary" type="button">Log out</button>
+      <section id="account" class="shop" hidden>
+        <div class="shop-head">
+          <div>
+            <p class="eyebrow">You're signed in</p>
+            <h2>Order online</h2>
+            <p class="fine">Signed in as <span id="account-email"></span></p>
+          </div>
+          <button id="logout" class="quiet" type="button">Log out</button>
+        </div>
+        <div>
+          <div id="menu-error" class="errors" hidden></div>
+          <ul id="menu" class="menu"></ul>
+        </div>
+        <aside class="cart">
+          <h3>Your order</h3>
+          <ul id="cart-lines" class="cart-lines"></ul>
+          <p id="cart-empty" class="fine">Nothing here yet. Add a drink.</p>
+          <p id="cart-total" class="cart-total" hidden></p>
+          <p id="order-note" class="success" hidden></p>
+          <button id="place-order" class="primary" type="button" disabled>Place order</button>
+        </aside>
       </section>
     </main>
 

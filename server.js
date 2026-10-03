@@ -12,6 +12,13 @@ const BCRYPT_COST = 10;
 const DEMO_EMAIL = "demo@juice.lab";
 const DEMO_PASSWORD = "Lemonade1";
 const SESSION_TTL_MS = 60 * 60 * 1000;
+const MENU = [
+  { id: "orange", name: "Orange juice", detail: "Fresh squeezed oranges", cents: 450 },
+  { id: "apple", name: "Apple juice", detail: "Cold pressed apples", cents: 400 },
+  { id: "lemonade", name: "Lemonade", detail: "Lemon, water, and a little sugar", cents: 350 },
+  { id: "green", name: "Green juice", detail: "Apple, cucumber, and kale", cents: 550 },
+  { id: "berry", name: "Berry blend", detail: "Strawberry, blueberry, and apple", cents: 500 },
+];
 
 export function createApp({ dbPath = ":memory:", rateLimitPerMinute = 8 } = {}) {
   const db = new DatabaseSync(dbPath);
@@ -154,14 +161,64 @@ export function createApp({ dbPath = ":memory:", rateLimitPerMinute = 8 } = {}) 
     return res.status(201).json({ ok: true });
   });
 
-  app.get("/api/me", (req, res) => {
+  function currentSession(req) {
     const token = readCookie(req, "session");
     const session = token ? sessions.get(token) : null;
     if (!session || Date.now() - session.created > SESSION_TTL_MS) {
       if (token) sessions.delete(token);
-      return res.status(401).json({ ok: false });
+      return null;
     }
+    return session;
+  }
+
+  app.get("/api/menu", (_req, res) => {
+    return res.json({ ok: true, items: MENU });
+  });
+
+  app.get("/api/me", (req, res) => {
+    const session = currentSession(req);
+    if (!session) return res.status(401).json({ ok: false });
     return res.json({ ok: true, email: session.email });
+  });
+
+  app.post("/api/orders", (req, res) => {
+    if (!sameOrigin(req)) {
+      return res.status(403).json({ ok: false, errors: ["Please order from this page."] });
+    }
+    const session = currentSession(req);
+    if (!session) {
+      return res.status(401).json({ ok: false, errors: ["Sign in before you order."] });
+    }
+
+    const requested = req.body?.items;
+    if (!Array.isArray(requested) || requested.length === 0) {
+      return res.status(400).json({ ok: false, errors: ["Add a drink before you place the order."] });
+    }
+    if (requested.length > MENU.length) {
+      return res.status(400).json({ ok: false, errors: ["That order is too long."] });
+    }
+
+    const lines = [];
+    const seen = new Set();
+    for (const item of requested) {
+      const drink = MENU.find((entry) => entry.id === item?.id);
+      const quantity = item?.quantity;
+      if (!drink || seen.has(drink.id)) {
+        return res.status(400).json({ ok: false, errors: ["Pick a drink from the list."] });
+      }
+      if (!Number.isInteger(quantity) || quantity < 1 || quantity > 12) {
+        return res.status(400).json({ ok: false, errors: ["Choose between 1 and 12 of each drink."] });
+      }
+      seen.add(drink.id);
+      lines.push({
+        name: drink.name,
+        quantity,
+        cents: drink.cents * quantity,
+      });
+    }
+
+    const totalCents = lines.reduce((sum, line) => sum + line.cents, 0);
+    return res.status(201).json({ ok: true, email: session.email, lines, totalCents });
   });
 
   app.post("/api/logout", (req, res) => {

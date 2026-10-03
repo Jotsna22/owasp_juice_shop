@@ -177,6 +177,35 @@ test("a markup-shaped email is not reflected by the login API", async () => {
   }
 });
 
+test("a signed-in customer can place an order", async () => {
+  const app = await start();
+  try {
+    const login = await post(app.base, "/api/login", {
+      email: "demo@juice.lab",
+      password: "Lemonade1",
+    });
+    const cookie = login.headers.get("set-cookie").split(";")[0];
+    const menu = await fetch(`${app.base}/api/menu`);
+    const drinks = await menu.json();
+    assert.equal(drinks.items.some((item) => item.name === "Orange juice"), true);
+
+    const blocked = await post(app.base, "/api/orders", { items: [{ id: "orange", quantity: 1 }] });
+    assert.equal(blocked.status, 401);
+
+    const order = await fetch(`${app.base}/api/orders`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", cookie },
+      body: JSON.stringify({ items: [{ id: "orange", quantity: 2 }] }),
+    });
+    const body = await order.json();
+    assert.equal(order.status, 201);
+    assert.equal(body.totalCents, 900);
+    assert.equal(body.lines[0].name, "Orange juice");
+  } finally {
+    await app.close();
+  }
+});
+
 test("login page does not build HTML from user input", async () => {
   const app = await start();
   try {
