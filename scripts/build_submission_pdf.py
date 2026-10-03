@@ -10,8 +10,23 @@ ROOT = Path(__file__).resolve().parents[1]
 SHOTS = ROOT / "docs" / "screenshots"
 OUT = ROOT / "submission" / "HW2B-Juice-Shop.pdf"
 
-PART_1 = """\
-Juice Shop has three flaws this login closes. The login query is open to SQL injection: a crafted email can change the statement and skip the password check. Binding the email with WHERE email = ? keeps it as data, and values that are not emails are rejected first. Search and reviews are open to cross-site scripting: a script planted there runs in another shopper's browser. Writing output as text, plus a policy that blocks inline scripts, stops that. Registration fails when the check lives only on the page or the secret is weak. The server decides identity. Passwords use bcrypt.hashSync(password, 10), and bcrypt.compareSync checks a guess without reversing the hash."""
+PART_1 = [
+    (
+        "1. SQL injection on login",
+        "A crafted email can change the database command and skip the password check, so someone signs in without the real password.",
+        "Bind the email with WHERE email = ?, so it stays data. Reject values that are not email addresses.",
+    ),
+    (
+        "2. Cross-site scripting in search and reviews",
+        "A script planted in search or a review runs in the next shopper's browser and can use their signed-in session.",
+        "Write that input as text, and block inline scripts with a Content-Security-Policy.",
+    ),
+    (
+        "3. Weak registration and password storage",
+        "A check that lives only on the page, or a weak reset secret, lets someone claim an account. A stolen database exposes plaintext or fast hashes.",
+        "The server decides identity. Store passwords with bcrypt.hashSync(password, 10). bcrypt.compareSync checks a guess without reversing the hash.",
+    ),
+]
 
 PART_2 = """\
 This is an HTML, CSS, and JavaScript login, plus account creation. validateLogin blocks an empty submit, requires @ in the email, and requires a password of at least 8 characters. The browser runs that check, and the server runs it again. Passwords are stored with bcrypt at cost 10. After sign-in, the customer can order drinks. Run npm install, then npm start, and open http://127.0.0.1:47291. The sample account is demo@juice.lab / Lemonade1. README.md has the same steps. Publish this folder on GitHub and paste that public URL here. This copy has no public link yet."""
@@ -53,6 +68,23 @@ def body(pdf: Submission, text: str):
     pdf.ln(2)
 
 
+def vulnerability(pdf: Submission, title: str, problem: str, fix: str):
+    pdf.set_x(pdf.l_margin)
+    pdf.set_text_color(36, 54, 44)
+    pdf.set_font("Times", "B", 12)
+    pdf.multi_cell(0, 6, title)
+    pdf.set_text_color(28, 25, 23)
+    for label, text in (("Problem", problem), ("Fix", fix)):
+        pdf.set_x(pdf.l_margin)
+        pdf.set_font("Times", "B", 11.5)
+        pdf.multi_cell(0, 5.6, label)
+        pdf.set_x(pdf.l_margin)
+        pdf.set_font("Times", size=11.5)
+        pdf.multi_cell(0, 5.6, text)
+        pdf.ln(0.6)
+    pdf.ln(1.5)
+
+
 def figure(pdf: Submission, filename: str, caption: str):
     path = SHOTS / filename
     with Image.open(path) as image:
@@ -77,7 +109,7 @@ def figure(pdf: Submission, filename: str, caption: str):
 
 
 def main():
-    print(f"Part 1 words: {words(PART_1)}")
+    print(f"Part 1 words: {words(' '.join(' '.join(item) for item in PART_1))}")
     print(f"Part 2 words: {words(PART_2)}")
     print(f"Part 3 words: {words(PART_3)}")
 
@@ -102,7 +134,8 @@ def main():
     pdf.ln(2)
 
     heading(pdf, "Part 1. Secure feature design")
-    body(pdf, PART_1)
+    for title, problem, fix in PART_1:
+        vulnerability(pdf, title, problem, fix)
 
     heading(pdf, "Part 2. Login form")
     body(pdf, PART_2)
