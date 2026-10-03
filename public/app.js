@@ -42,6 +42,11 @@ function showErrors(errors) {
 }
 
 function showSubmitted(email) {
+  if (!email) {
+    submittedEl.hidden = true;
+    submittedEmailEl.textContent = "";
+    return;
+  }
   submittedEl.hidden = false;
   submittedEmailEl.textContent = email;
 }

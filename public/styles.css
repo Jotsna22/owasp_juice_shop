@@ -264,7 +264,7 @@ input:focus {
 
 .switch { font-size: 0.95rem; }
 
-.switch a,
+.switch a:focus-visible,
 .brand:focus-visible,
 .label-row button:focus-visible,
 .primary:focus-visible {
