@@ -90,7 +90,7 @@ test("a SQL-shaped email that passes the format check still cannot bypass authen
       password: "password1",
     });
     assert.equal(status, 401);
-    assert.deepEqual(payload.errors, ["Invalid email or password."]);
+    assert.deepEqual(payload.errors, ["That email or password doesn't match our records."]);
   } finally {
     await app.close();
   }

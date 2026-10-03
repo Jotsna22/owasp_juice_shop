@@ -4,8 +4,6 @@ const form = document.querySelector("#login-form");
 const emailInput = document.querySelector("#email");
 const passwordInput = document.querySelector("#password");
 const errorsEl = document.querySelector("#errors");
-const submittedEl = document.querySelector("#submitted");
-const submittedEmailEl = document.querySelector("#submitted-email");
 const submitButton = document.querySelector("#login-button");
 const togglePassword = document.querySelector("#toggle-password");
 const rememberInput = document.querySelector("#remember");
@@ -41,16 +39,6 @@ function showErrors(errors) {
   errorsEl.hidden = false;
 }
 
-function showSubmitted(email) {
-  if (!email) {
-    submittedEl.hidden = true;
-    submittedEmailEl.textContent = "";
-    return;
-  }
-  submittedEl.hidden = false;
-  submittedEmailEl.textContent = email;
-}
-
 togglePassword.addEventListener("click", () => {
   const showing = passwordInput.type === "text";
   passwordInput.type = showing ? "password" : "text";
@@ -72,7 +60,6 @@ form.addEventListener("submit", async (event) => {
   const email = emailInput.value;
   const password = passwordInput.value;
   const errors = validateLogin(email, password);
-  showSubmitted(email);
 
   if (errors.length) {
     showErrors(errors);
@@ -89,7 +76,7 @@ form.addEventListener("submit", async (event) => {
     });
     const body = await response.json();
     if (!response.ok) {
-      showErrors(Array.isArray(body.errors) ? body.errors : ["Sign-in failed."]);
+      showErrors(Array.isArray(body.errors) ? body.errors : ["We couldn't sign you in. Try again."]);
       return;
     }
     if (rememberInput.checked) {
@@ -101,7 +88,7 @@ form.addEventListener("submit", async (event) => {
     registeredNote.hidden = true;
     await showAccount();
   } catch {
-    showErrors(["The server could not be reached. Nothing was signed in."]);
+    showErrors(["We couldn't sign you in. Check your internet and try again."]);
   } finally {
     submitButton.disabled = false;
     submitButton.textContent = "Log in";
@@ -114,9 +101,8 @@ document.querySelector("#logout").addEventListener("click", async () => {
   loginCard.hidden = false;
   passwordInput.value = "";
   showErrors([]);
-  submittedEl.hidden = true;
 });
 
 showAccount().catch(() => {
-  showErrors(["The server could not be reached."]);
+  showErrors(["We couldn't open your account. Refresh the page and try again."]);
 });

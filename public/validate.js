@@ -10,22 +10,22 @@ export function validateLogin(email, password) {
     errors.push("Email and password are required.");
   }
   if (emailText && !emailText.includes("@")) {
-    errors.push('Email must contain "@".');
+    errors.push("Email must include an @ sign.");
   }
   if (passwordText && passwordText.length < 8) {
     errors.push("Password must be at least 8 characters.");
   }
   if (emailText && CONTROL_CHARS.test(emailText)) {
-    errors.push("Email contains invalid characters.");
+    errors.push("That email has characters we can't use.");
   }
   if (emailText && emailText.includes("@") && !EMAIL_PATTERN.test(emailText)) {
-    errors.push("Enter a valid email address.");
+    errors.push("Enter a full email, like name@email.com.");
   }
   if (emailText.length > 254) {
-    errors.push("Email is too long.");
+    errors.push("That email is too long.");
   }
   if (passwordText.length > 72) {
-    errors.push("Password must be at most 72 characters.");
+    errors.push("That password is too long. Use 72 characters or fewer.");
   }
 
   return errors;
@@ -34,7 +34,7 @@ export function validateLogin(email, password) {
 export function validateRegistration(email, password, confirm) {
   const errors = validateLogin(email, password);
   if (typeof password !== "string" || password !== confirm) {
-    errors.push("Password confirmation does not match.");
+    errors.push("Those passwords don't match.");
   }
   return errors;
 }

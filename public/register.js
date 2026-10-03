@@ -44,12 +44,12 @@ form.addEventListener("submit", async (event) => {
     });
     const body = await response.json();
     if (!response.ok) {
-      showErrors(Array.isArray(body.errors) ? body.errors : ["Registration failed."]);
+      showErrors(Array.isArray(body.errors) ? body.errors : ["We couldn't create your account. Try again."]);
       return;
     }
     window.location.assign("/?registered=1");
   } catch {
-    showErrors(["The server could not be reached. No account was created."]);
+    showErrors(["We couldn't create your account. Check your internet and try again."]);
   } finally {
     submitButton.disabled = false;
     submitButton.textContent = "Create account";

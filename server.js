@@ -90,12 +90,12 @@ export function createApp({ dbPath = ":memory:", rateLimitPerMinute = 8 } = {}) 
 
   app.post("/api/login", (req, res) => {
     if (!sameOrigin(req)) {
-      return res.status(403).json({ ok: false, errors: ["Cross-site login was blocked."] });
+      return res.status(403).json({ ok: false, errors: ["Please sign in from this page."] });
     }
     if (tooManyAttempts(req.socket.remoteAddress || "unknown")) {
       return res.status(429).json({
         ok: false,
-        errors: ["Too many attempts. Wait a minute and try again."],
+        errors: ["Too many tries. Wait a minute, then try again."],
       });
     }
 
@@ -111,7 +111,7 @@ export function createApp({ dbPath = ":memory:", rateLimitPerMinute = 8 } = {}) 
     const hash = user?.password_hash ?? dummyHash;
     const match = bcrypt.compareSync(password, hash);
     if (!user || !match) {
-      return res.status(401).json({ ok: false, errors: ["Invalid email or password."] });
+      return res.status(401).json({ ok: false, errors: ["That email or password doesn't match our records."] });
     }
 
     const token = crypto.randomBytes(32).toString("hex");
@@ -125,12 +125,12 @@ export function createApp({ dbPath = ":memory:", rateLimitPerMinute = 8 } = {}) 
 
   app.post("/api/register", (req, res) => {
     if (!sameOrigin(req)) {
-      return res.status(403).json({ ok: false, errors: ["Cross-site registration was blocked."] });
+      return res.status(403).json({ ok: false, errors: ["Please create your account from this page."] });
     }
     if (tooManyAttempts(req.socket.remoteAddress || "unknown")) {
       return res.status(429).json({
         ok: false,
-        errors: ["Too many attempts. Wait a minute and try again."],
+        errors: ["Too many tries. Wait a minute, then try again."],
       });
     }
 
@@ -146,7 +146,7 @@ export function createApp({ dbPath = ":memory:", rateLimitPerMinute = 8 } = {}) 
     if (findId.get(normalized)) {
       return res.status(409).json({
         ok: false,
-        errors: ["An account with that email already exists."],
+        errors: ["An account with that email already exists. Try signing in."],
       });
     }
 
@@ -174,9 +174,9 @@ export function createApp({ dbPath = ":memory:", rateLimitPerMinute = 8 } = {}) 
   app.use((error, _req, res, next) => {
     if (res.headersSent) return next(error);
     if (error?.type === "entity.parse.failed") {
-      return res.status(400).json({ ok: false, errors: ["Request body must be JSON."] });
+      return res.status(400).json({ ok: false, errors: ["Something was wrong with that. Please try again."] });
     }
-    return res.status(500).json({ ok: false, errors: ["Something went wrong."] });
+    return res.status(500).json({ ok: false, errors: ["Something went wrong. Please try again."] });
   });
 
   app.locals.db = db;
