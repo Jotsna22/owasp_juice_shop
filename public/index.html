@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Login · Juice Shop Lab</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/">
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          <circle cx="16" cy="18" r="9" fill="#e07a2f" />
+          <path d="M16 8c1.8-3.4 5.4-4.6 7.4-3.4-2 2.6-4 3.4-7.4 3.4z" fill="#8fbf73" />
+        </svg>
+        <span>Juice Shop</span>
+      </a>
+      <p class="topbar-note">Secure login lab</p>
+    </header>
+
+    <main class="layout">
+      <section class="intro">
+        <p class="eyebrow">Customer counter</p>
+        <h1>Sign in before you check out.</h1>
+        <p class="lede">
+          Email and password are checked in the browser, then checked again on the server.
+          A failed form never becomes a database command.
+        </p>
+        <ul class="promises">
+          <li>Empty fields are rejected before the request is sent.</li>
+          <li>Passwords are stored only as bcrypt hashes.</li>
+          <li>Anything you type is shown back as text, not as HTML.</li>
+        </ul>
+      </section>
+
+      <section id="login-card" class="card">
+        <h2>Login</h2>
+        <p id="registered-note" class="success" hidden>Account created. Log in with the email and password you just chose.</p>
+        <form id="login-form" method="post" action="/api/login" novalidate>
+          <div id="errors" class="errors" role="alert" hidden></div>
+
+          <div class="field">
+            <label for="email">Email</label>
+            <input
+              id="email"
+              name="email"
+              type="text"
+              autocomplete="username"
+              inputmode="email"
+              spellcheck="false"
+              aria-required="true"
+            />
+          </div>
+
+          <div class="field">
+            <div class="label-row">
+              <label for="password">Password</label>
+              <button type="button" id="toggle-password" aria-label="Show password">Show</button>
+            </div>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              autocomplete="current-password"
+              aria-required="true"
+            />
+          </div>
+
+          <label class="remember">
+            <input id="remember" type="checkbox" />
+            Remember my email on this browser
+          </label>
+
+          <button id="login-button" class="primary" type="submit">Log in</button>
+        </form>
+
+        <div id="submitted" class="submitted" hidden>
+          <p>Submitted email, printed as text:</p>
+          <pre id="submitted-email"></pre>
+        </div>
+
+        <p class="switch">
+          Not yet a customer?
+          <a href="/register.html">Create an account</a>
+        </p>
+        <aside class="lab-account">
+          <p>Lab account</p>
+          <p><span>Email</span> demo@juice.lab</p>
+          <p><span>Password</span> Lemonade1</p>
+        </aside>
+      </section>
+
+      <section id="account" class="card" hidden>
+        <p class="eyebrow">Signed in</p>
+        <h2>Welcome back</h2>
+        <p>The server session names this account:</p>
+        <p id="account-email" class="account-email"></p>
+        <p class="fine">
+          The session cookie is HttpOnly. This page can show your email, and it cannot read the cookie.
+        </p>
+        <button id="logout" class="primary" type="button">Log out</button>
+      </section>
+    </main>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

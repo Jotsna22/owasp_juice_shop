@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Create account · Juice Shop Lab</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/">
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          <circle cx="16" cy="18" r="9" fill="#e07a2f" />
+          <path d="M16 8c1.8-3.4 5.4-4.6 7.4-3.4-2 2.6-4 3.4-7.4 3.4z" fill="#8fbf73" />
+        </svg>
+        <span>Juice Shop</span>
+      </a>
+      <p class="topbar-note">Secure login lab</p>
+    </header>
+
+    <main class="layout">
+      <section class="intro">
+        <p class="eyebrow">New customer</p>
+        <h1>Open an account without handing the database your password.</h1>
+        <p class="lede">
+          Registration repeats the login checks, then stores a bcrypt hash. The original password is not written to SQLite.
+        </p>
+      </section>
+
+      <section class="card">
+        <h2>Create account</h2>
+        <form id="register-form" method="post" action="/api/register" novalidate>
+          <div id="errors" class="errors" role="alert" hidden></div>
+
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="text" autocomplete="username" inputmode="email" spellcheck="false" aria-required="true" />
+          </div>
+
+          <div class="field">
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" autocomplete="new-password" aria-required="true" />
+          </div>
+
+          <div class="field">
+            <label for="confirm">Confirm password</label>
+            <input id="confirm" name="confirm" type="password" autocomplete="new-password" aria-required="true" />
+          </div>
+
+          <button id="register-button" class="primary" type="submit">Create account</button>
+        </form>
+        <p class="switch">
+          Already a customer?
+          <a href="/">Back to login</a>
+        </p>
+      </section>
+    </main>
+
+    <script type="module" src="/register.js"></script>
+  </body>
+</html>

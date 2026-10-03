@@ -1,0 +1,18 @@
+{
+  "name": "juice-shop-login-lab",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A Juice Shop-style login form with client-side and server-side validation, bcrypt password hashes, and parameterized SQL.",
+  "scripts": {
+    "start": "node --experimental-sqlite server.js",
+    "test": "node --experimental-sqlite --test test/login.test.js"
+  },
+  "engines": {
+    "node": ">=22.5"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express": "^4.21.2"
+  }
+}
